@@ -87,13 +87,20 @@ void cityBlock(pcl::visualization::PCLVisualizer::Ptr &viewer, std::shared_ptr<P
     pcl::PointCloud<pcl::PointXYZI>::Ptr filteredCloud = pointCloudProcessorPtr->FilterCloud(inputCloud, 0.3, cropBoxMin, cropBoxMax);
     //renderPointCloud(viewer, filteredCloud, "inputCloud");
 
-    std::pair<pcl::PointCloud<pcl::PointXYZI>::Ptr, pcl::PointCloud<pcl::PointXYZI>::Ptr> segment_cloud = pointCloudProcessorPtr->SegmentPlane(filteredCloud, 100, 0.2);
+    // std::pair<pcl::PointCloud<pcl::PointXYZI>::Ptr, pcl::PointCloud<pcl::PointXYZI>::Ptr>
+    // segment_cloud = pointCloudProcessorPtr->SegmentPlane(filteredCloud, 100, 0.2);
+
+    //Use custom Segment Plane algorithm.
+    std::pair<pcl::PointCloud<pcl::PointXYZI>::Ptr, pcl::PointCloud<pcl::PointXYZI>::Ptr>
+        segment_cloud = pointCloudProcessorPtr->CustomSegmentPlane(filteredCloud, 100, 0.2);
 
     //Render ground plane
     renderPointCloud(viewer, segment_cloud.second, "Plane Cloud", Color(0, 1, 0));
 
     //Detect clusters
-    std::vector<pcl::PointCloud<pcl::PointXYZI>::Ptr> cloudClusters = pointCloudProcessorPtr->Clustering(segment_cloud.first, 0.5, 10, 500);
+    // std::vector<pcl::PointCloud<pcl::PointXYZI>::Ptr> cloudClusters = pointCloudProcessorPtr->Clustering(segment_cloud.first, 0.5, 10, 500);
+
+    std::vector<pcl::PointCloud<pcl::PointXYZI>::Ptr> cloudClusters = pointCloudProcessorPtr->CustomClustering(segment_cloud.first, 0.5, 10, 500);
 
     int clusterId = 0;
     std::vector<Color> colors = {Color(1, 0, 0), Color(1, 1, 0), Color(0, 0, 1)};
@@ -151,7 +158,7 @@ int main(int argc, char **argv)
     auto streamIterator = stream.begin();
     pcl::PointCloud<pcl::PointXYZI>::Ptr inputCloudI;
 
-    CameraAngle setAngle = XY;
+    CameraAngle setAngle = FPS;
     initCamera(setAngle, viewer);
     //simpleHighway(viewer);
     while (!viewer->wasStopped())
