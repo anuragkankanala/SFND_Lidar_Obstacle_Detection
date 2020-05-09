@@ -95,7 +95,7 @@ void cityBlock(pcl::visualization::PCLVisualizer::Ptr &viewer, std::shared_ptr<P
 
     //Use custom Segment Plane algorithm.
     std::pair<pcl::PointCloud<pcl::PointXYZI>::Ptr, pcl::PointCloud<pcl::PointXYZI>::Ptr>
-        segment_cloud = customPointCloudProcessorPtr->SegmentPlane(filteredCloud, 100, 0.2);
+        segment_cloud = customPointCloudProcessorPtr->SegmentPlane(filteredCloud, 30, 0.3);
 
     //Render ground plane
     renderPointCloud(viewer, segment_cloud.second, "Plane Cloud", Color(0, 1, 0));
@@ -103,7 +103,7 @@ void cityBlock(pcl::visualization::PCLVisualizer::Ptr &viewer, std::shared_ptr<P
     //Detect clusters
     // std::vector<pcl::PointCloud<pcl::PointXYZI>::Ptr> cloudClusters = pointCloudProcessorPtr->Clustering(segment_cloud.first, 0.5, 10, 500);
 
-    std::vector<pcl::PointCloud<pcl::PointXYZI>::Ptr> cloudClusters = customPointCloudProcessorPtr->Clustering(segment_cloud.first, 0.5, 10, 500);
+    std::vector<pcl::PointCloud<pcl::PointXYZI>::Ptr> cloudClusters = customPointCloudProcessorPtr->Clustering(segment_cloud.first, 0.3, 10, 500);
 
     int clusterId = 0;
     std::vector<Color> colors = {Color(1, 0, 0), Color(1, 1, 0), Color(0, 0, 1)};
